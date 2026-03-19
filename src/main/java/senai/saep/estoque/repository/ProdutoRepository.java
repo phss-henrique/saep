@@ -11,4 +11,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
 
     List<Produto> findByNome(String nome);
     List<Produto> findAll();
+    Produto findBySku(String sku);
 }

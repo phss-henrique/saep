@@ -22,7 +22,7 @@ import java.util.UUID;
 public class Usuario{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID ID;
+    private UUID id;
     private String nome;
     @Column(unique = true)
     private String email;

@@ -2,6 +2,7 @@ package senai.saep.estoque.domain;
 
 import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,9 +20,11 @@ import lombok.Setter;
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID ID;
+    private UUID id;
     private String nome;
     private String material;
+    @Column(unique = true)
+    private String sku;
     private String categoria;
     private int tamanho;
     private int peso;

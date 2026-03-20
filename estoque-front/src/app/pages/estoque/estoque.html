@@ -1,0 +1,100 @@
+<div class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-base-content">Gestão de Estoque</h1>
+    <button class="btn btn-outline btn-sm" routerLink="/produtos">Ver Produtos</button>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl mb-8 border border-base-200">
+    <div class="card-body">
+      <h2 class="card-title text-primary mb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Nova Entrada
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold">SKU do Produto</span></label>
+          <input type="text" [(ngModel)]="novoEstoque.produto.sku" placeholder="Ex: AB123" class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold">Quantidade</span></label>
+          <input type="number" [(ngModel)]="novoEstoque.quantidade" placeholder="Ex: 50" class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text font-semibold">Localização</span></label>
+          <input type="text" [(ngModel)]="novoEstoque.localizacao" placeholder="Ex: Prateleira B2" class="input input-bordered w-full" />
+        </div>
+      </div>
+
+      <div class="card-actions justify-end mt-6">
+        <button class="btn btn-primary px-8" (click)="salvarEstoque()">Salvar Entrada</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto bg-base-100 shadow-xl rounded-box border border-base-200">
+    <table class="table table-zebra w-full">
+      <thead class="bg-base-200 text-base-content text-sm">
+        <tr>
+          <th>Produto</th>
+          <th>SKU</th>
+          <th>Localização</th>
+          <th>Quantidade</th>
+          <th>Ações</th> </tr>
+      </thead>
+      
+      <tbody>
+        <tr *ngFor="let item of listaEstoque">
+          <td class="font-bold">{{ item.produto?.nome || 'Produto Desconhecido' }}</td>
+          <td><span class="badge badge-ghost">{{ item.produto?.sku || 'N/A' }}</span></td>
+          <td>{{ item.localizacao }}</td>
+          <td>
+            <div class="badge font-bold" 
+                 [ngClass]="{'badge-error text-white': item.quantidade < 10, 'badge-success text-white': item.quantidade >= 10}">
+              {{ item.quantidade }} un
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-warning mr-2" (click)="abrirModalEdicao(item)">✏️</button>
+            <button class="btn btn-sm btn-error text-white" (click)="excluirEstoque(item.id)">🗑️</button>
+          </td>
+        </tr>
+
+        <tr *ngIf="listaEstoque.length === 0">
+          <td colspan="5" class="text-center text-gray-500 py-6">Nenhum item registrado no estoque ainda.</td> </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<dialog #modalEditar class="modal">
+  <div class="modal-box w-11/12 max-w-3xl">
+    <h3 class="font-bold text-2xl mb-6">Editar Estoque</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="form-control">
+        <label class="label"><span class="label-text">SKU do Produto</span></label>
+        <input type="text" [(ngModel)]="estoqueEditando.produto.sku" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Quantidade</span></label>
+        <input type="number" [(ngModel)]="estoqueEditando.quantidade" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Localização</span></label>
+        <input type="text" [(ngModel)]="estoqueEditando.localizacao" class="input input-bordered w-full" />
+      </div>
+    </div>
+
+    <div class="modal-action mt-6">
+      <button class="btn btn-ghost" (click)="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" (click)="salvarEdicao()">Salvar Alterações</button>
+    </div>
+  </div>
+  
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="fecharModal()">close</button>
+  </form>
+</dialog>

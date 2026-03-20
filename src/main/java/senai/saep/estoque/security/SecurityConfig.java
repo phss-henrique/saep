@@ -1,7 +1,10 @@
 package senai.saep.estoque.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -15,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import senai.saep.estoque.domain.Usuario;
 import senai.saep.estoque.service.UsuarioService;
@@ -33,8 +39,9 @@ public class SecurityConfig {
             
             // 2. Liberamos as rotas do seu Controller
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/login", "/api/user/criar").permitAll() 
-                .anyRequest().authenticated()                  
+                .anyRequest().authenticated()
             )
             
             // 3. Ensina o Spring a salvar a sessão gerada pelo Controller
@@ -85,4 +92,28 @@ public class SecurityConfig {
                 .build();
         };
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        
+        // 1. A porta exata do seu front-end (Não pode usar "*" quando se usa cookies)
+        configuration.setAllowedOrigins(List.of("http://localhost:4200")); 
+        
+        // 2. Os métodos HTTP que o Angular tem permissão para usar
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        
+        // 3. Permite qualquer cabeçalho (Headers)
+        configuration.setAllowedHeaders(List.of("*"));
+        
+        // 4. A REGRA DE OURO: Permite que o cookie JSESSIONID passe do Angular pro Spring
+        configuration.setAllowCredentials(true); 
+
+        // Aplica essa regra para todas as rotas da sua API (/**)
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        
+        return source;
+    }
+
 }

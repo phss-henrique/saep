@@ -1,6 +1,7 @@
 package senai.saep.estoque.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,21 @@ public class ProdutoService {
     public Produto criarProduto(Produto produto){
         return produtoRepository.save(produto);
     }
-    
+    public Produto atualizarProduto(UUID id, Produto dadosAtualizados) {
+        // 1. Busca o produto existente (o findById já vem de fábrica!)
+        Produto produtoExistente = produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
+
+        produtoExistente.setNome(dadosAtualizados.getNome());
+        produtoExistente.setSku(dadosAtualizados.getSku());
+        produtoExistente.setMaterial(dadosAtualizados.getMaterial());
+        produtoExistente.setCategoria(dadosAtualizados.getCategoria());
+        produtoExistente.setTamanho(dadosAtualizados.getTamanho());
+        produtoExistente.setPeso(dadosAtualizados.getPeso());
+
+        return produtoRepository.save(produtoExistente);
+    }
+    public void deletarProduto(UUID id) {
+        produtoRepository.deleteById(id);
+    }
 }

@@ -27,30 +27,32 @@ public class UsuarioController {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final SecurityContextRepository securityContextRepository;
+
+    
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Usuario usuario, 
                                         HttpServletRequest request, 
                                         HttpServletResponse response) {
-        
-        // Cria o token com as credenciais enviadas pelo front
-        UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(
-                usuario.getEmail(), 
-                usuario.getSenha()
-        );
+        try {
+            UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(
+                    usuario.getEmail(), 
+                    usuario.getSenha()
+            );
 
-        // O Spring vai no banco de dados e verifica se a senha bate
-        Authentication authentication = authenticationManager.authenticate(token);
+            // Se o e-mail não existir ou a senha estiver errada, ele pula direto pro 'catch'
+            Authentication authentication = authenticationManager.authenticate(token);
 
-        // Se a senha estiver correta, criamos o contexto de segurança
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+            securityContextRepository.saveContext(context, request, response);
 
-        // A MÁGICA DA SESSÃO: Salva o contexto. 
-        // Isso faz o Spring enviar o cookie JSESSIONID automaticamente na resposta HTTP.
-        securityContextRepository.saveContext(context, request, response);
-
-        return ResponseEntity.ok("Login realizado com sucesso!");
+            return ResponseEntity.ok("Login realizado com sucesso!");
+            
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            // AGORA SIM! Se der erro, ele devolve 401 e a gente sabe que o CORS funcionou!
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body("Erro: E-mail ou senha incorretos!");
+        }
     }
     
 
@@ -68,4 +70,6 @@ public class UsuarioController {
         usuarioService.criarUsuario(usuario);
         return ResponseEntity.ok("User created successfully");
     }
+
+
 }

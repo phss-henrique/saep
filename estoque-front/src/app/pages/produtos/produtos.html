@@ -1,0 +1,94 @@
+<div class="container mx-auto p-4">
+  
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Gestão de Produtos</h1>
+    <button class="btn btn-primary" routerLink="/estoque">
+      📦 Ir para Estoque
+    </button>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl mb-8">
+    <div class="card-body">
+      <h2 class="card-title">Novo Produto</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input type="text" [(ngModel)]="novoProduto.nome" placeholder="Nome (Ex: Martelo)" class="input input-bordered w-full" />
+        <input type="text" [(ngModel)]="novoProduto.sku" placeholder="SKU (Ex: AB123)" class="input input-bordered w-full" />
+        <input type="text" [(ngModel)]="novoProduto.material" placeholder="Material" class="input input-bordered w-full" />
+        <input type="text" [(ngModel)]="novoProduto.categoria" placeholder="Categoria" class="input input-bordered w-full" />
+        <input type="number" [(ngModel)]="novoProduto.tamanho" placeholder="Tamanho" class="input input-bordered w-full" />
+        <input type="number" [(ngModel)]="novoProduto.peso" placeholder="Peso" class="input input-bordered w-full" />
+      </div>
+      <div class="card-actions justify-end mt-4">
+        <button class="btn btn-success" (click)="salvarProduto()">Salvar Produto</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto bg-base-100 shadow-xl rounded-lg">
+    <table class="table w-full">
+      <thead>
+        <tr class="bg-base-200">
+          <th>SKU</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Material</th>
+          <th>Ações</th> 
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of listaProdutos">
+          <td class="font-bold">{{ p.sku }}</td>
+          <td>{{ p.nome }}</td>
+          <td>{{ p.categoria }}</td>
+          <td>{{ p.material }}</td>
+          <td>
+            <button class="btn btn-sm btn-warning mr-2" (click)="abrirModalEdicao(p)">✏️</button>
+            <button class="btn btn-sm btn-error text-white" (click)="excluirProduto(p.id)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<dialog #modalEditar class="modal">
+  <div class="modal-box w-11/12 max-w-3xl">
+    <h3 class="font-bold text-2xl mb-6">Editar Produto</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="form-control">
+        <label class="label"><span class="label-text">Nome</span></label>
+        <input type="text" [(ngModel)]="produtoEditando.nome" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">SKU</span></label>
+        <input type="text" [(ngModel)]="produtoEditando.sku" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Material</span></label>
+        <input type="text" [(ngModel)]="produtoEditando.material" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Categoria</span></label>
+        <input type="text" [(ngModel)]="produtoEditando.categoria" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Tamanho</span></label>
+        <input type="number" [(ngModel)]="produtoEditando.tamanho" class="input input-bordered w-full" />
+      </div>
+      <div class="form-control">
+        <label class="label"><span class="label-text">Peso</span></label>
+        <input type="number" [(ngModel)]="produtoEditando.peso" class="input input-bordered w-full" />
+      </div>
+    </div>
+
+    <div class="modal-action mt-6">
+      <button class="btn btn-ghost" (click)="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" (click)="salvarEdicao()">Salvar Alterações</button>
+    </div>
+  </div>
+  
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="fecharModal()">close</button>
+  </form>
+</dialog>

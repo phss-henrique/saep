@@ -20,7 +20,6 @@ public class EstoqueService {
     public List<Estoque> getTodosEstoque() {
         return estoqueRepository.findAll(); 
     }
-    // --- ATUALIZAR ESTOQUE ---
     public Estoque atualizarEstoque(UUID id, Estoque dadosAtualizados) {
         
         Estoque estoqueExistente = estoqueRepository.findById(id)

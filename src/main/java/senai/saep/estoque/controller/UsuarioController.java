@@ -39,7 +39,6 @@ public class UsuarioController {
                     usuario.getSenha()
             );
 
-            // Se o e-mail não existir ou a senha estiver errada, ele pula direto pro 'catch'
             Authentication authentication = authenticationManager.authenticate(token);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -50,7 +49,6 @@ public class UsuarioController {
             return ResponseEntity.ok("Login realizado com sucesso!");
             
         } catch (org.springframework.security.core.AuthenticationException e) {
-            // AGORA SIM! Se der erro, ele devolve 401 e a gente sabe que o CORS funcionou!
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body("Erro: E-mail ou senha incorretos!");
         }
     }

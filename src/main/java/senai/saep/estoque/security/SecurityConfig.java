@@ -34,17 +34,14 @@ public class SecurityConfig {
         http
             .cors(Customizer.withDefaults())
             
-            // 1. Desligamos o CSRF para facilitar o teste no Postman
             .csrf(csrf -> csrf.disable()) 
             
-            // 2. Liberamos as rotas do seu Controller
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/login", "/api/user/criar").permitAll() 
                 .anyRequest().authenticated()
             )
             
-            // 3. Ensina o Spring a salvar a sessão gerada pelo Controller
             .securityContext(context -> context
                 .securityContextRepository(securityContextRepository()) 
             );
@@ -52,10 +49,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ============================================================================================
-    // BEANS DE FERRAMENTAS DO SPRING SECURITY (O Controller e o Manager precisam deles)
-    // ============================================================================================
-
+    
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -71,23 +65,18 @@ public class SecurityConfig {
         return new HttpSessionSecurityContextRepository();
     }
 
-    // ============================================================================================
-    // A PEÇA QUE FALTAVA: Ensina o Spring a buscar o usuário no banco para o Login
-    // ============================================================================================
     @Bean
     public UserDetailsService userDetailsService(UsuarioService usuarioService) {
         return email -> {
-            // Busca o usuário no seu banco de dados
             Usuario usuario = usuarioService.getUsuarioByEmail(email);
             
             if (usuario == null) {
                 throw new UsernameNotFoundException("Usuário não encontrado com o email: " + email);
             }
             
-            // Converte para o formato que o Spring Security entende
             return User.builder()
                 .username(usuario.getEmail())
-                .password(usuario.getSenha()) // A senha que o Spring vai comparar com a que veio no POST
+                .password(usuario.getSenha()) 
                 .roles("USER") 
                 .build();
         };
@@ -97,19 +86,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // 1. A porta exata do seu front-end (Não pode usar "*" quando se usa cookies)
         configuration.setAllowedOrigins(List.of("http://localhost:4200")); 
         
-        // 2. Os métodos HTTP que o Angular tem permissão para usar
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
-        // 3. Permite qualquer cabeçalho (Headers)
         configuration.setAllowedHeaders(List.of("*"));
         
-        // 4. A REGRA DE OURO: Permite que o cookie JSESSIONID passe do Angular pro Spring
         configuration.setAllowCredentials(true); 
 
-        // Aplica essa regra para todas as rotas da sua API (/**)
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         

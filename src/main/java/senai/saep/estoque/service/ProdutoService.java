@@ -22,7 +22,6 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
     public Produto atualizarProduto(UUID id, Produto dadosAtualizados) {
-        // 1. Busca o produto existente (o findById já vem de fábrica!)
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
 

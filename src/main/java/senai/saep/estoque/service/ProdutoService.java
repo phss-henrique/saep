@@ -16,7 +16,7 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public List<Produto> getTodosProdutos() {
-        return produtoRepository.findAll(); 
+        return produtoRepository.findAllByOrderByNomeAsc(); 
     }
     public Produto criarProduto(Produto produto){
         return produtoRepository.save(produto);

@@ -9,5 +9,5 @@ import senai.saep.estoque.domain.Estoque;
 
 public interface EstoqueRepository extends JpaRepository<Estoque, UUID> {
     List<Estoque> findAll();
-
+    List<Estoque> findAllByOrderByProduto_NomeAsc();
 }

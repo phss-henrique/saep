@@ -54,11 +54,10 @@ export class Estoque implements OnInit {
 
     this.api.criarEstoque(this.novoEstoque).subscribe({
       next: (resposta) => {
-        alert('Entrada de estoque registrada com sucesso!');
         this.carregarEstoque(); 
         this.novoEstoque = { quantidade: null, localizacao: '', produto: { sku: '' } };
       },
-      error: (erro) => alert('Falha ao registrar. Verifique se o SKU digitado realmente existe.')
+      error: (erro) => alert(`Falha ao registrar. Verifique se o SKU digitado realmente existe. ${erro}`)
     });
   }
 
@@ -70,7 +69,7 @@ export class Estoque implements OnInit {
           alert('Estoque excluído com sucesso!');
           this.carregarEstoque();
         },
-        error: (err) => alert('Erro ao excluir estoque.')
+        error: (erro) => alert(`Erro ao excluir estoque. ${erro}`)
       });
     }
   }
@@ -94,11 +93,10 @@ export class Estoque implements OnInit {
   salvarEdicao() {
     this.api.atualizarEstoque(this.estoqueEditando.id, this.estoqueEditando).subscribe({
       next: () => {
-        alert('Estoque atualizado com sucesso!');
         this.fecharModal();
         this.carregarEstoque();
       },
-      error: (erro) => alert('Erro ao atualizar. Verifique se o SKU existe.')
+      error: (erro) => alert(`Erro ao atualizar. Verifique se o SKU existe. ${erro}`)
     });
   }
 }

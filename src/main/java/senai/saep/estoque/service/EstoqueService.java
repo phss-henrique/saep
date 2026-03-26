@@ -18,8 +18,14 @@ public class EstoqueService {
     private final ProdutoRepository produtoRepository;
     
     public List<Estoque> getTodosEstoque() {
-        return estoqueRepository.findAll(); 
+        return estoqueRepository.findAllByOrderByProduto_NomeAsc(); 
     }
+
+    public void criarEstoque(Estoque estoque, Produto produtoRealCompleto){
+        estoque.setProduto(produtoRealCompleto);
+        estoqueRepository.save(estoque);
+    }
+
     public Estoque atualizarEstoque(UUID id, Estoque dadosAtualizados) {
         
         Estoque estoqueExistente = estoqueRepository.findById(id)
@@ -42,5 +48,5 @@ public class EstoqueService {
 
     public void deletarEstoque(UUID id) {
         estoqueRepository.deleteById(id);
-    }
+    } 
 }

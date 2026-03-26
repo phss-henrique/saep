@@ -15,21 +15,18 @@ export class Estoque implements OnInit {
   
   listaEstoque: any[] = [];
 
-  // Objeto para Criação
   novoEstoque: any = {
     quantidade: null,
     localizacao: '',
     produto: { sku: '' }
   };
 
-  // Objeto para Edição (Modal)
   estoqueEditando: any = {
     quantidade: null,
     localizacao: '',
     produto: { sku: '' }
   };
 
-  // Referência do Modal
   @ViewChild('modalEditar') modalEditar!: ElementRef<HTMLDialogElement>;
 
   constructor(private api: Api, private cdr: ChangeDetectorRef) {}
@@ -48,9 +45,7 @@ export class Estoque implements OnInit {
     });
   }
 
-  // ==========================================
-  // LÓGICA DE CRIAÇÃO
-  // ==========================================
+  
   salvarEstoque() {
     if (!this.novoEstoque.produto.sku || !this.novoEstoque.quantidade) {
       alert('Por favor, preencha o SKU e a quantidade!');
@@ -67,9 +62,7 @@ export class Estoque implements OnInit {
     });
   }
 
-  // ==========================================
-  // LÓGICA DE EXCLUSÃO
-  // ==========================================
+  
   excluirEstoque(id: string) {
     if (confirm('Tem certeza que deseja excluir esta entrada de estoque?')) {
       this.api.deletarEstoque(id).subscribe({
@@ -82,11 +75,8 @@ export class Estoque implements OnInit {
     }
   }
 
-  // ==========================================
-  // LÓGICA DE EDIÇÃO (MODAL)
-  // ==========================================
+  
   abrirModalEdicao(item: any) {
-    // Copiamos os dados com cuidado por causa do objeto aninhado (produto.sku)
     this.estoqueEditando = { 
       id: item.id,
       quantidade: item.quantidade,

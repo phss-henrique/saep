@@ -14,7 +14,6 @@ import { Api } from '../../api';
 export class Produtos implements OnInit {
   listaProdutos: any[] = [];
   
-  // Objeto para Criação
   novoProduto: any = {
     nome: '',
     sku: '',
@@ -24,10 +23,8 @@ export class Produtos implements OnInit {
     peso: null
   };
 
-  // Objeto para Edição (Modal)
   produtoEditando: any = {};
 
-  // Pega a referência do modal lá do HTML
   @ViewChild('modalEditar') modalEditar!: ElementRef<HTMLDialogElement>;
 
   constructor(private api: Api, private router: Router, private cdr: ChangeDetectorRef) {}
@@ -49,9 +46,7 @@ export class Produtos implements OnInit {
     });
   }
 
-  // ==========================================
-  // LÓGICA DE CRIAÇÃO
-  // ==========================================
+  
   salvarProduto() {
     if (!this.novoProduto.nome || !this.novoProduto.sku) {
       alert('Nome e SKU são obrigatórios!');
@@ -62,7 +57,6 @@ export class Produtos implements OnInit {
       next: (response) => {
         alert('Produto criado com sucesso!');
         this.carregarProdutos();
-        // Limpa o formulário de criação
         this.novoProduto = {nome:'', sku:'', material:'', categoria:'', tamanho:null, peso:null};
       },
       error: (erro) => {
@@ -72,9 +66,7 @@ export class Produtos implements OnInit {
     });
   }
 
-  // ==========================================
-  // LÓGICA DE EXCLUSÃO
-  // ==========================================
+  
   excluirProduto(id: string) {
     if (confirm('Tem certeza que deseja excluir este produto?')) {
       this.api.deletarProduto(id).subscribe({
@@ -87,16 +79,14 @@ export class Produtos implements OnInit {
     }
   }
 
-  // ==========================================
-  // LÓGICA DE EDIÇÃO (MODAL)
-  // ==========================================
+  
   abrirModalEdicao(produto: any) {
-    this.produtoEditando = { ...produto }; // Copia os dados pro modal
-    this.modalEditar.nativeElement.showModal(); // Abre o modal do DaisyUI
+    this.produtoEditando = { ...produto }; 
+    this.modalEditar.nativeElement.showModal();
   }
 
   fecharModal() {
-    this.modalEditar.nativeElement.close(); // Fecha o modal
+    this.modalEditar.nativeElement.close(); 
   }
 
   salvarEdicao() {
